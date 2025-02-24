@@ -15,7 +15,7 @@ docs/_build
 venv/
 .env
 .vscode/
-db.sqlite3
+*.lock
 
 # Include tracked hidden files and directories in search and diff tools
 !.dockerignore
