@@ -1,0 +1,1296 @@
+{
+	"info": {
+		"_postman_id": "4b288238-85e8-4e85-b428-10196b2dd3b9",
+		"name": "sanic web api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32462526"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "admin",
+							"item": [
+								{
+									"name": "Auth admin",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": {
+												"password": "{{target_admin_password}}",
+												"username": "{{target_admin_email}}"
+											}
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/auth"
+									},
+									"response": [
+										{
+											"name": "Меню создано",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{LOCAL_URL}}/api/v1/menus"
+											},
+											"code": 201,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"9a5bce5f-4462-4d12-a66c-d59584b19ee8\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Create transaction",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 201 CREATED\r",
+													"pm.test(\"Status code is 201\", () => {\r",
+													"  pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"pm.environment.set('api_test_transaction_id', responseJSON.transaction_id);\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"amount\": {{target_transaction_amount}},\r\n  \"signature\": \"{{target_transaction_signature}}\",\r\n  \"user_id\": {{api_test_user_id}},\r\n  \"account_id\": {{api_test_account_id}},\r\n  \"transaction_id\": \"5eae174f-7cd0-472c-bd36-35660f00132b\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/transactions/create"
+									},
+									"response": [
+										{
+											"name": "Меню создано",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{LOCAL_URL}}/api/v1/menus"
+											},
+											"code": 201,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"9a5bce5f-4462-4d12-a66c-d59584b19ee8\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Get me",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    var target_user_email = pm.environment.get(\"target_admin_email\");\r",
+													"    var target_user_fullname = pm.environment.get(\"target_admin_fullname\");\r",
+													"    \r",
+													"    var responseEmail = responseJSON.email;\r",
+													"    var responseFullname = responseJSON.fullname;\r",
+													"    \r",
+													"    pm.expect(responseEmail).to.eql(target_user_email);\r",
+													"    pm.expect(responseFullname).to.eql(target_user_fullname);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/me"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Get all",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    for (var response of responseJSON){\r",
+													"        var responseId = response.id; // Changed 'user_id' to 'id'\r",
+													"        var responseFullname = response.fullname;\r",
+													"        var responseEmail = response.email;\r",
+													"\r",
+													"        if (responseId === pm.environment.get(\"api_test_user_id\")){ // Changed '.eql' to '==='\r",
+													"            var target_fullname = pm.environment.get(\"target_user_fullname\");\r",
+													"            var target_email = pm.environment.get(\"target_user_email\");\r",
+													"        }\r",
+													"\r",
+													"        if (responseId === pm.environment.get(\"api_test_admin_id\")){ // Changed '.eql' to '==='\r",
+													"            var target_fullname = pm.environment.get(\"target_admin_fullname\");\r",
+													"            var target_email = pm.environment.get(\"target_admin_email\");\r",
+													"        }      \r",
+													"        \r",
+													"        pm.expect(responseFullname).to.eql(target_fullname);\r",
+													"        pm.expect(responseEmail).to.eql(target_email);\r",
+													"    }\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/all"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Get accounts",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    for (var i in responseJSON){\r",
+													"        var responseBalance = responseJSON[i].balance;\r",
+													"        var target_account_balance = pm.environment.get(\"target_account_balance\");\r",
+													"\r",
+													"        pm.expect(responseBalance).to.eql(parseInt(target_account_balance));\r",
+													"    }\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/accounts"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Get transactions",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    for (var i in responseJSON){\r",
+													"        var responseAmount = responseJSON[i].amount;\r",
+													"        var responseSignature = responseJSON[i].signature;\r",
+													"\r",
+													"        var target_transaction_amount = pm.environment.get(\"target_transaction_amount\");\r",
+													"        var target_transaction_signature = pm.environment.get(\"target_transaction_signature\");\r",
+													"        \r",
+													"        pm.expect(responseAmount).to.eql(parseInt(target_transaction_amount));\r",
+													"        pm.expect(responseSignature).to.eql(target_transaction_signature);\r",
+													"    }\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/transactions"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Update user",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    var target_email = pm.environment.get(\"update_user_email\");\r",
+													"    //var target_password = pm.environment.get(\"update_user_password\");\r",
+													"    var target_fullname = pm.environment.get(\"update_user_fullname\");\r",
+													"    \r",
+													"    var responseEmail = responseJSON.email;\r",
+													"    //var responsePassword = responseJSON.password;\r",
+													"    var responseFullname = responseJSON.fullname;\r",
+													"    \r",
+													"    pm.expect(responseEmail).to.eql(target_email);\r",
+													"    //pm.expect(responsePassword).to.eql(target_password);\r",
+													"    pm.expect(responseFullname).to.eql(target_fullname);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"email\": \"a1_update@b.c\",\r\n  \"password\": \"password1_update\",\r\n  \"fullname\": \"fullname1_update\",\r\n  \"role\": \"user\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/update/{{api_test_user_id}}"
+									},
+									"response": [
+										{
+											"name": "Меню обновлено",
+											"originalRequest": {
+												"method": "PATCH",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"title\": \"My updated menu 1\",\r\n    \"description\": \"My updated menu description 1\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My updated menu 1\",\r\n    \"description\": \"My updated menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Delete user",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": "{{LOCAL_URL}}/api/v1/users/delete/{{api_test_user_id}}"
+									},
+									"response": [
+										{
+											"name": "Меню обновлено",
+											"originalRequest": {
+												"method": "PATCH",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"title\": \"My updated menu 1\",\r\n    \"description\": \"My updated menu description 1\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My updated menu 1\",\r\n    \"description\": \"My updated menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Logout",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/logout"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "user",
+							"item": [
+								{
+									"name": "Auth user",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "basic",
+											"basic": {
+												"password": "{{target_user_password}}",
+												"username": "{{target_user_email}}"
+											}
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/auth"
+									},
+									"response": [
+										{
+											"name": "Меню создано",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{LOCAL_URL}}/api/v1/menus"
+											},
+											"code": 201,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"9a5bce5f-4462-4d12-a66c-d59584b19ee8\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Get me",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    var target_user_email = pm.environment.get(\"target_user_email\");\r",
+													"    var target_user_fullname = pm.environment.get(\"target_user_fullname\");\r",
+													"    \r",
+													"    var responseEmail = responseJSON.email;\r",
+													"    var responseFullname = responseJSON.fullname;\r",
+													"    \r",
+													"    pm.expect(responseEmail).to.eql(target_user_email);\r",
+													"    pm.expect(responseFullname).to.eql(target_user_fullname);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/me"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Get user accounts",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    for (var response in responseJSON){\r",
+													"        var responseUserId = response.user_id;        \r",
+													"        var responseBalance = response.balance;\r",
+													"        \r",
+													"        var api_test_user_id = pm.environment.get(\"api_test_user_id\");\r",
+													"        var target_account_balance = pm.environment.get(\"target_account_balance\");\r",
+													"        \r",
+													"        pm.expect(responseUserId).to.eql(api_test_user_id);\r",
+													"        pm.expect(responseBalance).to.eql(target_account_balance);\r",
+													"    }\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/accounts"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Get user transactions",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Compare response against saved env value\", function() {\r",
+													"    for (var response in responseJSON){\r",
+													"        var responseAmount = response.amount;\r",
+													"        var responseSignature = response.signature;\r",
+													"        var responseUserId = response.user_id;\r",
+													"\r",
+													"        var api_test_user_id = pm.environment.get(\"api_test_user_id\");\r",
+													"        var target_transaction_amount = pm.environment.get(\"target_transaction_amount\");\r",
+													"        var target_transaction_signature = pm.environment.get(\"target_transaction_signature\");\r",
+													"        \r",
+													"        pm.expect(responseUserId).to.eql(api_test_user_id);\r",
+													"        pm.expect(responseAmount).to.eql(target_transaction_amount);\r",
+													"        pm.expect(responseSignature).to.eql(target_transaction_signature);\r",
+													"    }\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/transactions"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Logout",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const responseJSON = pm.response.json();\r",
+													"\r",
+													"// check that response status HTTP 200 OK\r",
+													"pm.test(\"Success answer\", function() {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response time is less than 200ms\", function () {\r",
+													"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/users/logout"
+									},
+									"response": [
+										{
+											"name": "Меню найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"id\": \"a2eb416c-2245-4526-bb4b-6343d5c5016f\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+										},
+										{
+											"name": "Меню не найдено",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "{{LOCAL_URL}}/api/v1/menus/{{api_test_menu_id}}"
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "Text",
+											"header": [],
+											"cookie": [],
+											"body": "{\r\n    \"detail\": \"menu not found\"\r\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Create user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"\r",
+											"// check that response status HTTP 201 CREATED\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"  pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"//pm.environment.set('api_test_user_id', responseJSON.id);\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"a1@b.c\",\r\n  \"password\": \"password1\",\r\n  \"fullname\": \"fullname1\",\r\n  \"role\": \"user\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{LOCAL_URL}}/api/v1/users/register"
+							},
+							"response": [
+								{
+									"name": "Меню создано",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/menus"
+									},
+									"code": 201,
+									"_postman_previewlanguage": "Text",
+									"header": [],
+									"cookie": [],
+									"body": "{\r\n    \"id\": \"9a5bce5f-4462-4d12-a66c-d59584b19ee8\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+								}
+							]
+						},
+						{
+							"name": "Create admin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"\r",
+											"// check that response status HTTP 201 CREATED\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"  pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"//pm.environment.set('api_test_admin_id', responseJSON.id);\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"a2@b.c\",\r\n  \"password\": \"password2\",\r\n  \"fullname\": \"fullname2\",\r\n  \"role\": \"admin\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{LOCAL_URL}}/api/v1/users/register"
+							},
+							"response": [
+								{
+									"name": "Меню создано",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/menus"
+									},
+									"code": 201,
+									"_postman_previewlanguage": "Text",
+									"header": [],
+									"cookie": [],
+									"body": "{\r\n    \"id\": \"9a5bce5f-4462-4d12-a66c-d59584b19ee8\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+								}
+							]
+						},
+						{
+							"name": "Create account",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJSON = pm.response.json();\r",
+											"\r",
+											"// check that response status HTTP 201 CREATED\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"  pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"//pm.environment.set('api_test_account_id', responseJSON.id);\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"user_id\": {{api_test_user_id}},\r\n  \"balance\": 0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{LOCAL_URL}}/api/v1/accounts/create"
+							},
+							"response": [
+								{
+									"name": "Меню создано",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{LOCAL_URL}}/api/v1/menus"
+									},
+									"code": 201,
+									"_postman_previewlanguage": "Text",
+									"header": [],
+									"cookie": [],
+									"body": "{\r\n    \"id\": \"9a5bce5f-4462-4d12-a66c-d59584b19ee8\",\r\n    \"title\": \"My menu 1\",\r\n    \"description\": \"My menu description 1\",\r\n    \"submenus_count\": 0,\r\n    \"dishes_count\": 0\r\n}"
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// check that response headers 'content-type' is 'application/json'",
+									"pm.test(\"Content-Type header is application/json\", () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
